@@ -4,13 +4,13 @@ const got = require("got");
 
 // This is the function that generates an appender function
 function stdoutAppender(layout, levels, config) {
-    const silentLevel = levels.getLevel(config.silentAlertLevel);
-    const audioLevel = levels.getLevel(config.audioAlertLevel);
     const msgTitle = config.msgTitle;
     let tgApiUrl = 'https://api.telegram.org'
     const urlRegExp = /(http|https):\/\/([\w.]+\/?)\S*/
     const tgApiUrl4Conf = config.tgApiUrl
+    // Determine whether the URL is correct
     if (urlRegExp.test(tgApiUrl4Conf)) {
+        // Remove URL end "/"
         if (tgApiUrl4Conf.charAt(tgApiUrl4Conf.length - 1) == "/") {
             tgApiUrl = tgApiUrl4Conf.substring(0, tgApiUrl4Conf.length - 1)
         } else {
@@ -26,11 +26,11 @@ function stdoutAppender(layout, levels, config) {
     };
     // This is the appender function itself
     return async (loggingEvent) => {
-        const params = JSON.parse(JSON.stringify(botchat_params));
-        if (silentLevel?.isLessThanOrEqualTo(loggingEvent.level.levelStr)) {
+        if (existStr(config.silentAlertLevel, loggingEvent.level.levelStr) || existStr(config.audioAlertLevel, loggingEvent.level.levelStr)) {
+            const params = JSON.parse(JSON.stringify(botchat_params));
             Object.assign(params.searchParams, {
                 text: msgTitle ? `${msgTitle}\n${layout(loggingEvent)}` : layout(loggingEvent),
-                disable_notification: audioLevel.isLessThanOrEqualTo(loggingEvent.level.levelStr) ? true : false
+                disable_notification: existStr(config.silentAlertLevel, levels.getLevel) ? true : false
             });
             try {
                 await got(sentMessageRoute, params);
@@ -40,6 +40,16 @@ function stdoutAppender(layout, levels, config) {
             }
         }
     };
+}
+
+function existStr(target, str) {
+    const lowerCaseStr = str.toString().toLowerCase();
+    if (typeof target === 'string') {
+        return target.toLowerCase().includes(lowerCaseStr)
+    } else if (target instanceof Array) {
+        return target.some(t => t.toLowerCase().includes(lowerCaseStr))
+    }
+    return false
 }
 
 function configure(config, layouts, findAppender, levels) {
