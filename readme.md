@@ -31,7 +31,9 @@ log4js.configure({
             silentAlertLevel: 'info',
             audioAlertLevel: 'error',
             bottoken: <token>,
-            botchatid: <chatid>
+            botchatid: <chatid>,
+            tgApiUrl: 'https://api.myproxytgapi.com', // optional
+            msgTitle: '<title>', // optional
         }
     },
     categories: { default: { appenders: ['colouredConsole', 'telegramAlert'], level: 'debug' } }
