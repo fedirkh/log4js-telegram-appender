@@ -15,7 +15,7 @@ npm install --save log4js
 
 Install log4js-node-telegramAppender:
 ```
-npm install --save log4js-telegram-appender
+npm install --save @whatk/log4js-telegram-appender
 ```
 
 Sample usage:
@@ -27,7 +27,7 @@ log4js.configure({
     appenders: {
         colouredConsole: { type: 'stdout' },
         telegramAlert: {
-            type: 'log4js-telegram-appender',
+            type: '@whatk/log4js-telegram-appender',
             silentAlertLevel: 'info',
             audioAlertLevel: 'error',
             bottoken: <token>,

@@ -1,5 +1,5 @@
 {
-  "name": "log4js-telegram-appender",
+  "name": "@whatk/log4js-telegram-appender",
   "version": "1.3.0",
   "description": "Writes logs to telegram chats",
   "main": "index.js",
